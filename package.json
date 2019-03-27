@@ -13,7 +13,9 @@
   },
   "author": "Brendan Tanner",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "cors": "^2.8.5"
+  },
   "devDependencies": {
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
