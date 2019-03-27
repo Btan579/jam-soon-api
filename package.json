@@ -4,8 +4,8 @@
   "description": "Find music locally",
   "main": "server.js",
   "scripts": {
-      "start": "node server.js",
-      "test": "mocha"
+    "start": "node server.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -13,7 +13,8 @@
   },
   "author": "Brendan Tanner",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
