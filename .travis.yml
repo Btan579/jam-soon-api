@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: BCMHkkoXy0E62/Gm2+ojxP3hozuk7xlriBUnDun3lFkB71wbgp/TSebp/NNlwzMyer9D/YsC0xvhRFCRvwfycLTnabd+W7w2ZT8uNf2WhjREDLYdqK5mJur/lJqltq3y0s3x7LYxmp4EjPg8JciCUAOvRllz1iIht0hnHNa5kdYBjFQZNx/jRR5rLzBlzhGB5AyuDMGS42mfRQBRqGv/D42brO86HrHUrnJXsQC+S5Jqs6JS2CrtSDUKJR/maSYz4RIHEFqIc9/o9ByUbYHYZz9/kxN7qQax9vRZwKvOvEBHwPwuWrJuMDWcPTT5h6kbeYbaW6tR5iR9XbtjXXonajopwwdIijill6a5Ul5E9/SLFOG+OSqTcZc1Afqo6t58Zw/lG9mXpVy9fVdGreeN/JKYzec94ZepaYsRWdLTlfYYHbaJ4Wgmh0LyXZH4kn1ScRA2+/abIBveXSl6d/3IYHcP6gnq1bNGH6CfbQsHDOND6tPviSz2/1LIySm67oVzHHOVcwdwnAxhnXyt9I6ipd+itH/HbLZPhF5JH9VvlSvC8JPTI+EPuAQ82/aKc9aBwXeACmy487IdjcUeWM2d/vPLiTuSHlu4IDBFUuCjfoilERzVkHxiyRkIBhMnZWnlROBNYPW3ckrRXNMUY08cOgwoqKl5xe7Vk9GyxOj3SIE=
+  app: quiet-meadow-32669
+  on:
+    repo: Btan579/jam-soon-api
