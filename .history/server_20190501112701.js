@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
-const cors = require('cors');
+
 // Here we use destructuring assignment with renaming so the two variables
 // called router (from ./users and ./auth) have different names
 // For example:
@@ -15,7 +15,6 @@ const cors = require('cors');
 const { router: usersRouter } = require('./users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { router: favArtistsRouter } = require('./favartists');
-const { router: favEventsRouter } = require('./favevents');
 
 mongoose.Promise = global.Promise;
 
@@ -48,16 +47,11 @@ app.use('/api/favevents/', favEventsRouter);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
-app.get('/api/protected', jwtAuth, (req, res) => {
-    return res.json({
-        data: 'rosebud'
-    });
-});
-
-app.get("/api/", (req, res) => {
-    res.json({ ok: false });
-});
-
+// app.get('/api/protected', jwtAuth, (req, res) => {
+//     return res.json({
+//         data: 'rosebud'
+//     });
+// });
 
 app.use('*', (req, res) => {
     return res.status(404).json({ message: 'Not Found' });
