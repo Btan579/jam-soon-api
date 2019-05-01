@@ -4,7 +4,7 @@ const passport = require('passport');
 const router = express.Router();
 const mongoose = require("mongoose");
 const {
-    FavoriteArtist
+    FavoriteEvent
 } = require("./models");
 
 mongoose.Promise = global.Promise;
@@ -13,14 +13,15 @@ router.use(bodyParser.json());
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // GET
-router.get('/:userIdCsv', jwtAuth,(req, res) => {
+router.get('/:userIdCsv', jwtAuth, (req, res) => {
     let userId = req.params.user_id;
-    FavoriteArtist
+    FavoriteEvent
         .find({
-            user_id: userId })
-        .then(favoriteArtists => {
+            user_id: userId
+        })
+        .then(favoriteEvents => {
             return res.status(200).json({
-                favoriteArtists: favoriteArtists
+                favoriteEvents: favoriteEvents
             });
         })
         .catch(err => {
@@ -34,7 +35,7 @@ router.get('/:userIdCsv', jwtAuth,(req, res) => {
 // POST
 
 router.post('/', jwtAuth, (req, res) => {
-    const requiredFields = ['favArtistName', 'playlistUrl', 'user_id', 'artist_id'];
+    const requiredFields = ['favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favState', 'favZip', 'user_id', 'event_id'];
     requiredFields.forEach(field => {
         if (!(field in req.body)) {
             const message = `Missing \`${field}\` in request body`;
@@ -42,19 +43,29 @@ router.post('/', jwtAuth, (req, res) => {
             return res.status(400).send(message);
         }
     });
-    FavoriteArtist
+    FavoriteEvent
         .create({
-            favArtistName: req.body.favArtistName,
-            playlistUrl: req.body.playlistUrl,
+            event_id: req.body.event_id,
             user_id: req.body.user_id,
-            artist_id: req.body.artist_id
+            favEventName: req.body.favEventName,
+            favDate: req.body.favDate,
+            favHeadliner: req.body.favHeadliner,
+            favSupportingArtists: req.body.favSupportingArtists,
+            favVenue: req.body.favVenue,
+            favState: req.body.favState,
+            favZip: req.body.favZip,
         })
-        .then(favoriteArtist => res.status(201).json({
-            _id: favoriteArtist._id,
-            favArtistName: favoriteArtist.favArtistName,
-            playlistUrl: favoriteArtist.playlistUrl,
-            user_id: favoriteArtist.user_id,
-            artist_id: favoriteArtist.artist_id
+        .then(favoriteEvent => res.status(201).json({
+            _id: favoriteEvent._id,
+            event_id: favoriteEvent.event_id,
+            user_id: favoriteEvent.user_id,
+            favEventName: favoriteEvent.favEventName,
+            favDate:favoriteEvent.favDate,
+            favHeadliner: favoriteEvent.favHeadliner,
+            favSupportingArtists: favoriteEvent.favSupportingArtists,
+            favVenue: favoriteEvent.favVenue,
+            favState: favoriteEvent.favState,
+            favZip: favoriteEvent.favZip,
         }))
         .catch(err => {
             console.error(err);
@@ -67,10 +78,10 @@ router.post('/', jwtAuth, (req, res) => {
 // DELETE 
 
 router.delete('/:id', jwtAuth, (req, res) => {
-    FavoriteArtist
+    FavoriteEvent
         .findByIdAndRemove(req.params.id)
         .then(() => {
-            console.log(`Deleted artist with id \`${req.params.id}\``);
+            console.log(`Deleted event with id \`${req.params.id}\``);
             res.status(204).end();
         });
 });

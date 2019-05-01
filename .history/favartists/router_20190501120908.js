@@ -34,7 +34,7 @@ router.get('/:userIdCsv', jwtAuth,(req, res) => {
 // POST
 
 router.post('/', jwtAuth, (req, res) => {
-    const requiredFields = ['favArtistName', 'playlistUrl', 'user_id', 'artist_id'];
+    const requiredFields = ['favArtistName', 'playlistUrl', 'user_id'];
     requiredFields.forEach(field => {
         if (!(field in req.body)) {
             const message = `Missing \`${field}\` in request body`;
