@@ -208,6 +208,7 @@ describe('/api/favartists', function () {
                         return chai.request(app)
                             .delete(`/api/favevents/${favoriteEvent._id}`)
                             .set('authorization', `Bearer ${token}`);
+
                     })
                     .then(res => {
                         res.should.have.status(204);

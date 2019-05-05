@@ -184,39 +184,40 @@ describe('/api/favartists', function () {
                     });
             });
         });
-        describe('Delete', function () {
-            it('Should delete specific favorite event by id', async function () {
-                let user = await getUser();
-                let userAuth = user.username;
-                let favoriteEvent;
-                const token = jwt.sign(
-                    {
-                        user: {
-                            userAuth
-                        }
-                    },
-                    JWT_SECRET,
-                    {
-                        algorithm: 'HS256',
-                        subject: userAuth,
-                        expiresIn: '7d'
-                    }
-                );
-                return FavoriteEvent.findOne()
-                    .then(_favoriteEvent => {
-                        favoriteEvent = _favoriteEvent;
-                        return chai.request(app)
-                            .delete(`/api/favevents/${favoriteEvent._id}`)
-                            .set('authorization', `Bearer ${token}`);
-                    })
-                    .then(res => {
-                        res.should.have.status(204);
-                        return FavoriteEvent.findById(favoriteEvent._id);
-                    })
-                    .then(_favoriteEvent => {
-                        should.not.exist(_favoriteEvent);
-                    });
-            });
-        });
+        // describe('Delete', function () {
+        //     it('Should delete specific favorite artist by id', async function () {
+        //         let user = await getUser();
+        //         let userAuth = user.username;
+        //         let favoriteArtist;
+        //         const token = jwt.sign(
+        //             {
+        //                 user: {
+        //                     userAuth
+        //                 }
+        //             },
+        //             JWT_SECRET,
+        //             {
+        //                 algorithm: 'HS256',
+        //                 subject: userAuth,
+        //                 expiresIn: '7d'
+        //             }
+        //         );
+        //         return FavoriteArtist.findOne()
+        //             .then(_favoriteArtist => {
+        //                 favoriteArtist = _favoriteArtist;
+        //                 return chai.request(app)
+        //                     .delete(`/api/favartists/${favoriteArtist._id}`)
+        //                     .set('authorization', `Bearer ${token}`);
+
+        //             })
+        //             .then(res => {
+        //                 res.should.have.status(204);
+        //                 return FavoriteArtist.findById(favoriteArtist._id);
+        //             })
+        //             .then(_favoriteArtist => {
+        //                 should.not.exist(_favoriteArtist);
+        //             });
+        //     });
+        // });
     });
 });

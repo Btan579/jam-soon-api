@@ -13,11 +13,30 @@ router.use(bodyParser.json());
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // GET
-router.get('/:userIdCsv', jwtAuth,(req, res) => {
-    let userId = req.params.user_id;
+
+router.get('/', jwtAuth, (req, res) => {
+    FavoriteArtist
+        .find()
+        .then(favoriteArtists => {
+            return res.status(200).json({
+                favoriteArtists: favoriteArtists
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                error: 'something went terribly wrong'
+            });
+        });
+});
+
+
+router.get('/:userId', jwtAuth,(req, res) => {
+    let user_id = req.params.userId;
+    
     FavoriteArtist
         .find({
-            user_id: userId })
+            user_id: user_id })
         .then(favoriteArtists => {
             return res.status(200).json({
                 favoriteArtists: favoriteArtists

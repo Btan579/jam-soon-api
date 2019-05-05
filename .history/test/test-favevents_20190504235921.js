@@ -92,22 +92,16 @@ describe('/api/favartists', function () {
     });
 
 
-    describe('/api/favevents', function () {
+    describe('/api/favevebts', function () {
         describe('POST', function () {
             it('Should post a new favorite event', async function () {
                 let user = await getUser();
                 let userAuth = user.username;
-                const newFavEvent = new FavoriteEvent({
-                    favEventName: faker.random.word(),
-                    favDate: faker.date.future(),
-                    favHeadliner: faker.random.word(),
-                    favSupportingArtists: [faker.random.word(), faker.random.word(), faker.random.word()],
-                    favVenue: faker.commerce.productName(),
-                    favState: faker.address.state(),
-                    favCity: faker.address.city(),
-                    favZip: faker.address.zipCode(),
+                const newFavEvent = new FavoriteArtist({
+                    favArtistName: faker.random.word(),
+                    playlistUrl: faker.internet.url(),
                     user_id: user._id,
-                    event_id: faker.random.number()
+                    artist_id: faker.random.number()
                 });
                 const token = jwt.sign(
                     {
@@ -125,30 +119,24 @@ describe('/api/favartists', function () {
 
                 return chai
                     .request(app)
-                    .post('/api/favevents')
+                    .post('/api/favartists')
                     .set('authorization', `Bearer ${token}`)
-                    .send(newFavEvent)
+                    .send(newFavArtist)
                     .then((res) => {
                         res.should.have.status(201);
                         res.should.be.json;
                         res.body.should.be.a('object');
-                        res.body.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favState', 'favCity', 'favZip', 'user_id', 'event_id');
+                        res.body.should.include.keys('favArtistName', 'playlistUrl', 'user_id', 'artist_id');
                         res.body._id.should.not.be.null;
-                        res.body.favEventName.should.equal(newFavEvent.favEventName);
-                        res.body.favDate.should.equal(newFavEvent.favDate);
-                        res.body.favHeadliner.should.equal(newFavEvent.favHeadliner);
-                        res.body.favSupportingArtists.should.deep.equal(newFavEvent.favSupportingArtists);
-                        res.body.favVenue.should.equal(newFavEvent.favVenue);
-                        res.body.favState.should.equal(newFavEvent.favState);
-                        res.body.favCity.should.equal(newFavEvent.favCity);
-                        res.body.favZip.should.equal(newFavEvent.favZip);
-                        res.body.user_id.should.equal(newFavEvent.user_id.toString());
-                        res.body.event_id.should.equal(newFavEvent.event_id);
+                        res.body.favArtistName.should.equal(newFavArtist.favArtistName);
+                        res.body.playlistUrl.should.equal(newFavArtist.playlistUrl);
+                        res.body.user_id.should.equal(newFavArtist.user_id.toString());
+                        res.body.artist_id.should.equal(newFavArtist.artist_id);
                     });
             });
         });
         describe('GET', function () {
-            it('Should return favorite events for specific user', async function () {
+            it('Should return favorite artists for specific user', async function () {
                 let user = await getUser();
                 let userAuth = user.username;
                 let userId;
@@ -170,25 +158,25 @@ describe('/api/favartists', function () {
                         userId = usr._id;
                     });
                 return chai.request(app)
-                    .get(`/api/favevents/${userId}`)
+                    .get(`/api/favartists/${userId}`)
                     .set('authorization', `Bearer ${token}`)
                     .then(res => {
                         expect(res).to.have.status(200);
                         expect(res.body).to.be.an('object');
-                        expect(res.body.favoriteEvents).to.be.an('array');
-                        res.body.favoriteEvents.forEach(function (favoriteEvent) {
-                            favoriteEvent.should.be.a('object');
-                            favoriteEvent.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favState', 'favCity', 'favZip', 'user_id', 'event_id');
-                            favoriteEvent.user_id.should.equal(userId.toString());
+                        expect(res.body.favoriteArtists).to.be.an('array');
+                        res.body.favoriteArtists.forEach(function (favoriteArtist) {
+                            favoriteArtist.should.be.a('object');
+                            favoriteArtist.should.include.keys('favArtistName', 'playlistUrl', 'user_id', 'artist_id', '_id');
+                            favoriteArtist.user_id.should.equal(userId.toString());
                         });
                     });
             });
         });
         describe('Delete', function () {
-            it('Should delete specific favorite event by id', async function () {
+            it('Should delete specific favorite artist by id', async function () {
                 let user = await getUser();
                 let userAuth = user.username;
-                let favoriteEvent;
+                let favoriteArtist;
                 const token = jwt.sign(
                     {
                         user: {
@@ -202,19 +190,20 @@ describe('/api/favartists', function () {
                         expiresIn: '7d'
                     }
                 );
-                return FavoriteEvent.findOne()
-                    .then(_favoriteEvent => {
-                        favoriteEvent = _favoriteEvent;
+                return FavoriteArtist.findOne()
+                    .then(_favoriteArtist => {
+                        favoriteArtist = _favoriteArtist;
                         return chai.request(app)
-                            .delete(`/api/favevents/${favoriteEvent._id}`)
+                            .delete(`/api/favartists/${favoriteArtist._id}`)
                             .set('authorization', `Bearer ${token}`);
+
                     })
                     .then(res => {
                         res.should.have.status(204);
-                        return FavoriteEvent.findById(favoriteEvent._id);
+                        return FavoriteArtist.findById(favoriteArtist._id);
                     })
-                    .then(_favoriteEvent => {
-                        should.not.exist(_favoriteEvent);
+                    .then(_favoriteArtist => {
+                        should.not.exist(_favoriteArtist);
                     });
             });
         });
