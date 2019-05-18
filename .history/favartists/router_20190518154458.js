@@ -51,7 +51,6 @@ router.get('/:userId', jwtAuth, (req, res) => {
 
 // POST
 router.post('/', jwtAuth, (req, res) => {
-    console.log(req.body);
     const requiredFields = ['favArtistName', 'playlistUrl', 'user_id', 'artist_id'];
     requiredFields.forEach(field => {
         if (!(field in req.body)) {
@@ -60,7 +59,7 @@ router.post('/', jwtAuth, (req, res) => {
             return res.status(400).send(message);
         }
     });
-    // console.log(req.body);
+    console.log(req.body);
     FavoriteArtist
         .find({
             user_id: req.body.user_id,

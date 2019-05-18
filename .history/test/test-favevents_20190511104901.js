@@ -92,63 +92,7 @@ describe('/api/favartists', function () {
 
     describe('/api/favevents', function () {
         describe('POST', function () {
-            // it('Should post a new favorite event', async function () {
-            //     let user = await getUser();
-            //     let userAuth = user.username;
-            //     const newFavEvent = new FavoriteEvent({
-            //         favEventName: faker.random.word(),
-            //         favDate: faker.date.future(),
-            //         favHeadliner: faker.random.word(),
-            //         favSupportingArtists: [faker.random.word(), faker.random.word(), faker.random.word()],
-            //         favVenue: faker.commerce.productName(),
-            //         favVenueLocation: `${faker.address.state()}, ${faker.address.city}`,
-            //         user_id: user._id,
-            //         event_id: faker.random.number()
-            //     });
-            //     const token = jwt.sign(
-            //         {
-            //             user: {
-            //                 userAuth
-            //             }
-            //         },
-            //         JWT_SECRET,
-            //         {
-            //             algorithm: 'HS256',
-            //             subject: userAuth,
-            //             expiresIn: '7d'
-            //         }
-            //     );
-
-            //     return chai
-            //         .request(app)
-            //         .post('/api/favevents')
-            //         .set('authorization', `Bearer ${token}`)
-            //         .send(newFavEvent)
-            //         .then((res) => {
-            //             res.should.have.status(201);
-            //             res.should.be.json;
-            //             res.body.should.be.a('object');
-            //             res.body.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id');
-            //             res.body._id.should.not.be.null;
-            //             res.body.favEventName.should.equal(newFavEvent.favEventName);
-            //             res.body.favDate.should.equal(newFavEvent.favDate);
-            //             res.body.favHeadliner.should.equal(newFavEvent.favHeadliner);
-            //             res.body.favSupportingArtists.should.deep.equal(newFavEvent.favSupportingArtists);
-            //             res.body.favVenue.should.equal(newFavEvent.favVenue);
-            //             res.body.favVenueLocation.should.equal(newFavEvent.favVenueLocation);
-            //             res.body.user_id.should.equal(newFavEvent.user_id.toString());
-            //             res.body.event_id.should.equal(newFavEvent.event_id);
-            //         });
-            // });
-
-            it('Should reject requests with where an event is favorited already by user', async function () {
-                let eventId;
-                FavoriteEvent
-                    .findOne()
-                    .then(event => {
-                        eventId = event.event_id;
-                    });
-
+            it('Should post a new favorite event', async function () {
                 let user = await getUser();
                 let userAuth = user.username;
                 const newFavEvent = new FavoriteEvent({
@@ -159,9 +103,8 @@ describe('/api/favartists', function () {
                     favVenue: faker.commerce.productName(),
                     favVenueLocation: `${faker.address.state()}, ${faker.address.city}`,
                     user_id: user._id,
-                    event_id: eventId
+                    event_id: faker.random.number()
                 });
-
                 const token = jwt.sign(
                     {
                         user: {
@@ -175,15 +118,72 @@ describe('/api/favartists', function () {
                         expiresIn: '7d'
                     }
                 );
+
                 return chai
                     .request(app)
                     .post('/api/favevents')
                     .set('authorization', `Bearer ${token}`)
                     .send(newFavEvent)
                     .then((res) => {
-                        expect(res).to.have.status(400);
+                        res.should.have.status(201);
+                        res.should.be.json;
+                        res.body.should.be.a('object');
+                        res.body.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id');
+                        res.body._id.should.not.be.null;
+                        res.body.favEventName.should.equal(newFavEvent.favEventName);
+                        res.body.favDate.should.equal(newFavEvent.favDate);
+                        res.body.favHeadliner.should.equal(newFavEvent.favHeadliner);
+                        res.body.favSupportingArtists.should.deep.equal(newFavEvent.favSupportingArtists);
+                        res.body.favVenue.should.equal(newFavEvent.favVenue);
+                        res.body.favVenueLocation.should.equal(newFavEvent.favVenueLocation);
+                        res.body.user_id.should.equal(newFavEvent.user_id.toString());
+                        res.body.event_id.should.equal(newFavEvent.event_id);
                     });
             });
+
+            // it('Should reject requests with where an event is favorited already by user', async function () {
+            //     let eventId;
+            //     FavoriteEvent
+            //         .findOne()
+            //         .then(event => {
+            //             eventId = event.event_id;
+            //         });
+
+            //     let user = await getUser();
+            //     let userAuth = user.username;
+            //     const newFavEvent = new FavoriteEvent({
+            //         favEventName: faker.random.word(),
+            //         favDate: faker.date.future(),
+            //         favHeadliner: faker.random.word(),
+            //         favSupportingArtists: [faker.random.word(), faker.random.word(), faker.random.word()],
+            //         favVenue: faker.commerce.productName(),
+            //         favVenueLocation: `${faker.address.state()}, ${faker.address.city}`,
+            //         user_id: user._id,
+            //         event_id: eventId
+            //     });
+
+            //     const token = jwt.sign(
+            //         {
+            //             user: {
+            //                 userAuth
+            //             }
+            //         },
+            //         JWT_SECRET,
+            //         {
+            //             algorithm: 'HS256',
+            //             subject: userAuth,
+            //             expiresIn: '7d'
+            //         }
+            //     );
+            //     return chai
+            //         .request(app)
+            //         .post('/api/favartists')
+            //         .set('authorization', `Bearer ${token}`)
+            //         .send(newFavEvent)
+            //         .then((res) => {
+            //             expect(res).to.have.status(400);
+            //         });
+            // });
         });
         describe('GET', function () {
             it('Should return favorite events for specific user', async function () {

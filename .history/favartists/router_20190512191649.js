@@ -14,30 +14,30 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // GET
 
-// router.get('/', (req, res) => {
+router.get('/', (req, res) => {
     
-//     FavoriteArtist
-//         .find()
-//         .then(favoriteArtists => {
-//           res.json(favoriteArtists);
-//         })
-//         .catch(err => {
-//             console.error(err);
-//             res.status(500).json({
-//                 error: 'something went terribly wrong'
-//             });
-//         });
-// });
-router.get('/:userId', jwtAuth, (req, res) => {
-    
+    FavoriteArtist
+        .find()
+        .then(favoriteArtists => {
+          res.json(favoriteArtists);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                error: 'something went terribly wrong'
+            });
+        });
+});
+router.get('/:userId', jwtAuth,(req, res) => {
     let user_id = req.params.userId;
     console.log(user_id);
     FavoriteArtist
         .find({
-            user_id: user_id 
-        })
+            user_id: user_id })
         .then(favoriteArtists => {
+            console.log(favoriteArtists);
             return res.status(200).json({
+               
                 favoriteArtists: favoriteArtists
             });
         })
@@ -51,7 +51,6 @@ router.get('/:userId', jwtAuth, (req, res) => {
 
 // POST
 router.post('/', jwtAuth, (req, res) => {
-    console.log(req.body);
     const requiredFields = ['favArtistName', 'playlistUrl', 'user_id', 'artist_id'];
     requiredFields.forEach(field => {
         if (!(field in req.body)) {
@@ -60,7 +59,7 @@ router.post('/', jwtAuth, (req, res) => {
             return res.status(400).send(message);
         }
     });
-    // console.log(req.body);
+
     FavoriteArtist
         .find({
             user_id: req.body.user_id,
@@ -100,25 +99,47 @@ router.post('/', jwtAuth, (req, res) => {
                 error: 'Something went really wrong'
             });
         });
+
+
+
+
+
+
+
+
+    // FavoriteArtist
+    //     .create({
+    //         favArtistName: req.body.favArtistName,
+    //         playlistUrl: req.body.playlistUrl,
+    //         user_id: req.body.user_id,
+    //         artist_id: req.body.artist_id
+    //     })
+    //     .then(favoriteArtist => res.status(201).json({
+    //         _id: favoriteArtist._id,
+    //         favArtistName: favoriteArtist.favArtistName,
+    //         playlistUrl: favoriteArtist.playlistUrl,
+    //         user_id: favoriteArtist.user_id,
+    //         artist_id: favoriteArtist.artist_id
+    //     }))
+    //     .catch(err => {
+    //         console.error(err);
+    //         res.status(500).json({
+    //             error: 'Something went wrong'
+    //         });
+    //     });
 });
 
 // DELETE 
 
 router.delete('/:id', jwtAuth, (req, res) => {
     FavoriteArtist
-        .findByIdAndRemove(req.params.id, (err, favoriteArtist) => {
-            if (err) return console.error(err);
+        .findByIdAndRemove(req.params.id)
+        .then(() => {
             console.log(`Deleted artist with id \`${req.params.id}\``);
-            res.send(favoriteArtist);
+            console.log(req.params.id);
+            res.send(req.params.id);
             res.status(204).end();
-            return favoriteArtist;
         });
-        // .then(() => {
-        //     console.log(`Deleted artist with id \`${req.params.id}\``);
-        //     console.log(req.params.id);
-        //     res.send(req.params.id);
-        //     res.status(204).end();
-        // });
 });
 
 module.exports = { router };

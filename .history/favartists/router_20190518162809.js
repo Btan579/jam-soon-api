@@ -60,7 +60,7 @@ router.post('/', jwtAuth, (req, res) => {
             return res.status(400).send(message);
         }
     });
-    // console.log(req.body);
+    console.log(req.body);
     FavoriteArtist
         .find({
             user_id: req.body.user_id,

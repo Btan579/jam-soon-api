@@ -4,8 +4,9 @@ const passport = require('passport');
 const router = express.Router();
 const mongoose = require("mongoose");
 const {
-    FavoriteArtist
+    FavoriteEvent
 } = require("./models");
+
 
 mongoose.Promise = global.Promise;
 router.use(bodyParser.json());
@@ -13,32 +14,15 @@ router.use(bodyParser.json());
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // GET
-
-// router.get('/', (req, res) => {
-    
-//     FavoriteArtist
-//         .find()
-//         .then(favoriteArtists => {
-//           res.json(favoriteArtists);
-//         })
-//         .catch(err => {
-//             console.error(err);
-//             res.status(500).json({
-//                 error: 'something went terribly wrong'
-//             });
-//         });
-// });
 router.get('/:userId', jwtAuth, (req, res) => {
-    
     let user_id = req.params.userId;
-    console.log(user_id);
-    FavoriteArtist
+    FavoriteEvent
         .find({
-            user_id: user_id 
+            user_id: user_id
         })
-        .then(favoriteArtists => {
+        .then(favoriteEvents => {
             return res.status(200).json({
-                favoriteArtists: favoriteArtists
+                favoriteEvents: favoriteEvents
             });
         })
         .catch(err => {
@@ -51,8 +35,7 @@ router.get('/:userId', jwtAuth, (req, res) => {
 
 // POST
 router.post('/', jwtAuth, (req, res) => {
-    console.log(req.body);
-    const requiredFields = ['favArtistName', 'playlistUrl', 'user_id', 'artist_id'];
+    const requiredFields = ['favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id'];
     requiredFields.forEach(field => {
         if (!(field in req.body)) {
             const message = `Missing \`${field}\` in request body`;
@@ -60,31 +43,39 @@ router.post('/', jwtAuth, (req, res) => {
             return res.status(400).send(message);
         }
     });
-    // console.log(req.body);
-    FavoriteArtist
+
+    FavoriteEvent    
         .find({
             user_id: req.body.user_id,
-            artist_id: req.body.artist_id
+            event_id: req.body.event_id
         })
         .then(favorite => {
-            if (favorite[0] !== undefined) {
-                const message1 = `Artist already favorited`;
+            if (favorite[0] !== undefined){
+                const message1 = `Event already favorited`;
                 console.error(message1);
                 return res.status(400).send(message1);
             } else {
-                FavoriteArtist
+                FavoriteEvent
                     .create({
-                        favArtistName: req.body.favArtistName,
-                        playlistUrl: req.body.playlistUrl,
+                        event_id: req.body.event_id,
                         user_id: req.body.user_id,
-                        artist_id: req.body.artist_id
+                        favEventName: req.body.favEventName,
+                        favDate: req.body.favDate,
+                        favHeadliner: req.body.favHeadliner,
+                        favSupportingArtists: req.body.favSupportingArtists,
+                        favVenue: req.body.favVenue,
+                        favVenueLocation: req.body.favVenueLocation
                     })
-                    .then(favoriteArtist => res.status(201).json({
-                        _id: favoriteArtist._id,
-                        favArtistName: favoriteArtist.favArtistName,
-                        playlistUrl: favoriteArtist.playlistUrl,
-                        user_id: favoriteArtist.user_id,
-                        artist_id: favoriteArtist.artist_id
+                    .then(favoriteEvent => res.status(201).json({
+                        _id: favoriteEvent._id,
+                        event_id: favoriteEvent.event_id,
+                        user_id: favoriteEvent.user_id,
+                        favEventName: favoriteEvent.favEventName,
+                        favDate: favoriteEvent.favDate,
+                        favHeadliner: favoriteEvent.favHeadliner,
+                        favSupportingArtists: favoriteEvent.favSupportingArtists,
+                        favVenue: favoriteEvent.favVenue,
+                        favVenueLocation: favoriteEvent.favVenueLocation
                     }))
                     .catch(err => {
                         console.error(err);
@@ -105,18 +96,15 @@ router.post('/', jwtAuth, (req, res) => {
 // DELETE 
 
 router.delete('/:id', jwtAuth, (req, res) => {
-    FavoriteArtist
-        .findByIdAndRemove(req.params.id, (err, favoriteArtist) => {
-            if (err) return console.error(err);
-            console.log(`Deleted artist with id \`${req.params.id}\``);
-            res.send(favoriteArtist);
+    FavoriteEvent
+        .findByIdAndRemove(req.params.id, (err, favoriteEvent) => {
+            console.log(`Deleted event with id \`${req.params.id}\``);
+            res.send(favoriteEvent);
             res.status(204).end();
-            return favoriteArtist;
+            return favoriteEvent;
         });
         // .then(() => {
-        //     console.log(`Deleted artist with id \`${req.params.id}\``);
-        //     console.log(req.params.id);
-        //     res.send(req.params.id);
+        //     console.log(`Deleted event with id \`${req.params.id}\``);
         //     res.status(204).end();
         // });
 });

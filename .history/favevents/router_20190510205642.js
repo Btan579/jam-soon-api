@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const {
     FavoriteEvent
 } = require("./models");
-
+const { User } = require("../users/models");
 
 mongoose.Promise = global.Promise;
 router.use(bodyParser.json());
@@ -34,6 +34,7 @@ router.get('/:userId', jwtAuth, (req, res) => {
 });
 
 // POST
+
 router.post('/', jwtAuth, (req, res) => {
     const requiredFields = ['favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id'];
     requiredFields.forEach(field => {
@@ -97,17 +98,11 @@ router.post('/', jwtAuth, (req, res) => {
 
 router.delete('/:id', jwtAuth, (req, res) => {
     FavoriteEvent
-        .findByIdAndRemove(req.params.id, (err, favoriteEvent) => {
-            if (err) return console.error(err);
+        .findByIdAndRemove(req.params.id)
+        .then(() => {
             console.log(`Deleted event with id \`${req.params.id}\``);
-            res.send(favoriteEvent);
             res.status(204).end();
-            return favoriteEvent;
         });
-        // .then(() => {
-        //     console.log(`Deleted event with id \`${req.params.id}\``);
-        //     res.status(204).end();
-        // });
 });
 
 module.exports = { router };

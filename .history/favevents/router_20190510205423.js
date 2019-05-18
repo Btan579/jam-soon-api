@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const {
     FavoriteEvent
 } = require("./models");
-
+const { User } = require("../users/models");
 
 mongoose.Promise = global.Promise;
 router.use(bodyParser.json());
@@ -34,6 +34,7 @@ router.get('/:userId', jwtAuth, (req, res) => {
 });
 
 // POST
+
 router.post('/', jwtAuth, (req, res) => {
     const requiredFields = ['favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id'];
     requiredFields.forEach(field => {
@@ -50,6 +51,9 @@ router.post('/', jwtAuth, (req, res) => {
             event_id: req.body.event_id
         })
         .then(favorite => {
+            console.log(favorite);
+        console.log(favorite[0].event_id);
+           console.log(req.body.event_id);
             if (favorite[0] !== undefined){
                 const message1 = `Event already favorited`;
                 console.error(message1);
@@ -84,6 +88,40 @@ router.post('/', jwtAuth, (req, res) => {
                         });
                     });
             }
+                // if (favorite[0].event_id === req.body.event_id){
+                //     const message1 = `Event already favorited`;
+                //     console.error(message1);
+                //     return res.status(400).send(message1);
+                // } else {
+                //     FavoriteEvent
+                //         .create({
+                //             event_id: req.body.event_id,
+                //             user_id: req.body.user_id,
+                //             favEventName: req.body.favEventName,
+                //             favDate: req.body.favDate,
+                //             favHeadliner: req.body.favHeadliner,
+                //             favSupportingArtists: req.body.favSupportingArtists,
+                //             favVenue: req.body.favVenue,
+                //             favVenueLocation: req.body.favVenueLocation
+                //         })
+                //         .then(favoriteEvent => res.status(201).json({
+                //             _id: favoriteEvent._id,
+                //             event_id: favoriteEvent.event_id,
+                //             user_id: favoriteEvent.user_id,
+                //             favEventName: favoriteEvent.favEventName,
+                //             favDate: favoriteEvent.favDate,
+                //             favHeadliner: favoriteEvent.favHeadliner,
+                //             favSupportingArtists: favoriteEvent.favSupportingArtists,
+                //             favVenue: favoriteEvent.favVenue,
+                //             favVenueLocation: favoriteEvent.favVenueLocation
+                //         }))
+                //         .catch(err => {
+                //             console.error(err);
+                //             res.status(500).json({
+                //                 error: 'Something went wrong'
+                //             });
+                //         });
+                // }
         })
         .catch(err => {
             console.error(err);
@@ -91,23 +129,47 @@ router.post('/', jwtAuth, (req, res) => {
                 error: 'Something went really wrong'
             });
         });
+
+    // FavoriteEvent
+    //     .create({
+    //         event_id: req.body.event_id,
+    //         user_id: req.body.user_id,
+    //         favEventName: req.body.favEventName,
+    //         favDate: req.body.favDate,
+    //         favHeadliner: req.body.favHeadliner,
+    //         favSupportingArtists: req.body.favSupportingArtists,
+    //         favVenue: req.body.favVenue,
+    //         favVenueLocation: req.body.favVenueLocation
+    //     })
+    //     .then(favoriteEvent => res.status(201).json({
+    //         _id: favoriteEvent._id,
+    //         event_id: favoriteEvent.event_id,
+    //         user_id: favoriteEvent.user_id,
+    //         favEventName: favoriteEvent.favEventName,
+    //         favDate: favoriteEvent.favDate,
+    //         favHeadliner: favoriteEvent.favHeadliner,
+    //         favSupportingArtists: favoriteEvent.favSupportingArtists,
+    //         favVenue: favoriteEvent.favVenue,
+    //         favVenueLocation: favoriteEvent.favVenueLocation
+    //     }))
+    //     .catch(err => {
+    //         console.error(err);
+    //         res.status(500).json({
+    //             error: 'Something went wrong'
+    //         });
+    //     });
+    
 });
 
 // DELETE 
 
 router.delete('/:id', jwtAuth, (req, res) => {
     FavoriteEvent
-        .findByIdAndRemove(req.params.id, (err, favoriteEvent) => {
-            if (err) return console.error(err);
+        .findByIdAndRemove(req.params.id)
+        .then(() => {
             console.log(`Deleted event with id \`${req.params.id}\``);
-            res.send(favoriteEvent);
             res.status(204).end();
-            return favoriteEvent;
         });
-        // .then(() => {
-        //     console.log(`Deleted event with id \`${req.params.id}\``);
-        //     res.status(204).end();
-        // });
 });
 
 module.exports = { router };

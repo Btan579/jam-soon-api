@@ -222,39 +222,39 @@ describe('/api/favartists', function () {
                     });
             });
         });
-        describe('Delete', function () {
-            it('Should delete specific favorite event by id', async function () {
-                let user = await getUser();
-                let userAuth = user.username;
-                let favoriteEvent;
-                const token = jwt.sign(
-                    {
-                        user: {
-                            userAuth
-                        }
-                    },
-                    JWT_SECRET,
-                    {
-                        algorithm: 'HS256',
-                        subject: userAuth,
-                        expiresIn: '7d'
-                    }
-                );
-                return FavoriteEvent.findOne()
-                    .then(_favoriteEvent => {
-                        favoriteEvent = _favoriteEvent;
-                        return chai.request(app)
-                            .delete(`/api/favevents/${favoriteEvent._id}`)
-                            .set('authorization', `Bearer ${token}`);
-                    })
-                    .then(res => {
-                        res.should.have.status(204);
-                        return FavoriteEvent.findById(favoriteEvent._id);
-                    })
-                    .then(_favoriteEvent => {
-                        should.not.exist(_favoriteEvent);
-                    });
-            });
-        });
+        // describe('Delete', function () {
+        //     it('Should delete specific favorite event by id', async function () {
+        //         let user = await getUser();
+        //         let userAuth = user.username;
+        //         let favoriteEvent;
+        //         const token = jwt.sign(
+        //             {
+        //                 user: {
+        //                     userAuth
+        //                 }
+        //             },
+        //             JWT_SECRET,
+        //             {
+        //                 algorithm: 'HS256',
+        //                 subject: userAuth,
+        //                 expiresIn: '7d'
+        //             }
+        //         );
+        //         return FavoriteEvent.findOne()
+        //             .then(_favoriteEvent => {
+        //                 favoriteEvent = _favoriteEvent;
+        //                 return chai.request(app)
+        //                     .delete(`/api/favevents/${favoriteEvent._id}`)
+        //                     .set('authorization', `Bearer ${token}`);
+        //             })
+        //             .then(res => {
+        //                 res.should.have.status(204);
+        //                 return FavoriteEvent.findById(favoriteEvent._id);
+        //             })
+        //             .then(_favoriteEvent => {
+        //                 should.not.exist(_favoriteEvent);
+        //             });
+        //     });
+        // });
     });
 });

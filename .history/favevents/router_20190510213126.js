@@ -97,17 +97,11 @@ router.post('/', jwtAuth, (req, res) => {
 
 router.delete('/:id', jwtAuth, (req, res) => {
     FavoriteEvent
-        .findByIdAndRemove(req.params.id, (err, favoriteEvent) => {
-            if (err) return console.error(err);
+        .findByIdAndRemove(req.params.id)
+        .then(() => {
             console.log(`Deleted event with id \`${req.params.id}\``);
-            res.send(favoriteEvent);
             res.status(204).end();
-            return favoriteEvent;
         });
-        // .then(() => {
-        //     console.log(`Deleted event with id \`${req.params.id}\``);
-        //     res.status(204).end();
-        // });
 });
 
 module.exports = { router };

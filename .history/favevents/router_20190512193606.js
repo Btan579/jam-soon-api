@@ -18,7 +18,7 @@ router.get('/:userId', jwtAuth, (req, res) => {
     let user_id = req.params.userId;
     FavoriteEvent
         .find({
-            user_id: user_id
+            // user_id: user_id
         })
         .then(favoriteEvents => {
             return res.status(200).json({
@@ -97,17 +97,11 @@ router.post('/', jwtAuth, (req, res) => {
 
 router.delete('/:id', jwtAuth, (req, res) => {
     FavoriteEvent
-        .findByIdAndRemove(req.params.id, (err, favoriteEvent) => {
-            if (err) return console.error(err);
+        .findByIdAndRemove(req.params.id)
+        .then(() => {
             console.log(`Deleted event with id \`${req.params.id}\``);
-            res.send(favoriteEvent);
             res.status(204).end();
-            return favoriteEvent;
         });
-        // .then(() => {
-        //     console.log(`Deleted event with id \`${req.params.id}\``);
-        //     res.status(204).end();
-        // });
 });
 
 module.exports = { router };

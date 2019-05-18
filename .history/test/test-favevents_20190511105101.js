@@ -177,7 +177,7 @@ describe('/api/favartists', function () {
                 );
                 return chai
                     .request(app)
-                    .post('/api/favevents')
+                    .post('/api/favartists')
                     .set('authorization', `Bearer ${token}`)
                     .send(newFavEvent)
                     .then((res) => {
@@ -185,76 +185,76 @@ describe('/api/favartists', function () {
                     });
             });
         });
-        describe('GET', function () {
-            it('Should return favorite events for specific user', async function () {
-                let user = await getUser();
-                let userAuth = user.username;
-                let userId;
-                const token = jwt.sign(
-                    {
-                        user: {
-                            userAuth
-                        }
-                    },
-                    JWT_SECRET,
-                    {
-                        algorithm: 'HS256',
-                        subject: userAuth,
-                        expiresIn: '7d'
-                    }
-                );
-                await User.findOne()
-                    .then(usr => {
-                        userId = usr._id;
-                    });
-                return chai.request(app)
-                    .get(`/api/favevents/${userId}`)
-                    .set('authorization', `Bearer ${token}`)
-                    .then(res => {
-                        expect(res).to.have.status(200);
-                        expect(res.body).to.be.an('object');
-                        expect(res.body.favoriteEvents).to.be.an('array');
-                        res.body.favoriteEvents.forEach(function (favoriteEvent) {
-                            favoriteEvent.should.be.a('object');
-                            favoriteEvent.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id');
-                            favoriteEvent.user_id.should.equal(userId.toString());
-                        });
-                    });
-            });
-        });
-        describe('Delete', function () {
-            it('Should delete specific favorite event by id', async function () {
-                let user = await getUser();
-                let userAuth = user.username;
-                let favoriteEvent;
-                const token = jwt.sign(
-                    {
-                        user: {
-                            userAuth
-                        }
-                    },
-                    JWT_SECRET,
-                    {
-                        algorithm: 'HS256',
-                        subject: userAuth,
-                        expiresIn: '7d'
-                    }
-                );
-                return FavoriteEvent.findOne()
-                    .then(_favoriteEvent => {
-                        favoriteEvent = _favoriteEvent;
-                        return chai.request(app)
-                            .delete(`/api/favevents/${favoriteEvent._id}`)
-                            .set('authorization', `Bearer ${token}`);
-                    })
-                    .then(res => {
-                        res.should.have.status(204);
-                        return FavoriteEvent.findById(favoriteEvent._id);
-                    })
-                    .then(_favoriteEvent => {
-                        should.not.exist(_favoriteEvent);
-                    });
-            });
-        });
+        // describe('GET', function () {
+        //     it('Should return favorite events for specific user', async function () {
+        //         let user = await getUser();
+        //         let userAuth = user.username;
+        //         let userId;
+        //         const token = jwt.sign(
+        //             {
+        //                 user: {
+        //                     userAuth
+        //                 }
+        //             },
+        //             JWT_SECRET,
+        //             {
+        //                 algorithm: 'HS256',
+        //                 subject: userAuth,
+        //                 expiresIn: '7d'
+        //             }
+        //         );
+        //         await User.findOne()
+        //             .then(usr => {
+        //                 userId = usr._id;
+        //             });
+        //         return chai.request(app)
+        //             .get(`/api/favevents/${userId}`)
+        //             .set('authorization', `Bearer ${token}`)
+        //             .then(res => {
+        //                 expect(res).to.have.status(200);
+        //                 expect(res.body).to.be.an('object');
+        //                 expect(res.body.favoriteEvents).to.be.an('array');
+        //                 res.body.favoriteEvents.forEach(function (favoriteEvent) {
+        //                     favoriteEvent.should.be.a('object');
+        //                     favoriteEvent.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id');
+        //                     favoriteEvent.user_id.should.equal(userId.toString());
+        //                 });
+        //             });
+        //     });
+        // });
+        // describe('Delete', function () {
+        //     it('Should delete specific favorite event by id', async function () {
+        //         let user = await getUser();
+        //         let userAuth = user.username;
+        //         let favoriteEvent;
+        //         const token = jwt.sign(
+        //             {
+        //                 user: {
+        //                     userAuth
+        //                 }
+        //             },
+        //             JWT_SECRET,
+        //             {
+        //                 algorithm: 'HS256',
+        //                 subject: userAuth,
+        //                 expiresIn: '7d'
+        //             }
+        //         );
+        //         return FavoriteEvent.findOne()
+        //             .then(_favoriteEvent => {
+        //                 favoriteEvent = _favoriteEvent;
+        //                 return chai.request(app)
+        //                     .delete(`/api/favevents/${favoriteEvent._id}`)
+        //                     .set('authorization', `Bearer ${token}`);
+        //             })
+        //             .then(res => {
+        //                 res.should.have.status(204);
+        //                 return FavoriteEvent.findById(favoriteEvent._id);
+        //             })
+        //             .then(_favoriteEvent => {
+        //                 should.not.exist(_favoriteEvent);
+        //             });
+        //     });
+        // });
     });
 });

@@ -88,7 +88,7 @@ describe('/api/favartists', function () {
 
     describe('/api/favartists', function () {
         describe('POST', function () {
-            it('Should reject requests with where an artist is favorited already by user', async function () {
+            it('Should reject requests with where an event is favorited already by user', async function () {
                 let artistId;
                 FavoriteArtist
                     .findOne()

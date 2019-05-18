@@ -88,23 +88,21 @@ describe('/api/favartists', function () {
 
     describe('/api/favartists', function () {
         describe('POST', function () {
-            it('Should reject requests with where an artist is favorited already by user', async function () {
-                let artistId;
-                FavoriteArtist
-                    .findOne()
-                    .then(artist => {
-                        artistId = artist.artist_id;
-                    });
-
+            it('Should reject requests with where an event is favorited already by user', async function () {
                 let user = await getUser();
                 let userAuth = user.username;
-                const newFavArtist = new FavoriteArtist({
+                const newFavArtistFirst = new FavoriteArtist({
                     favArtistName: faker.random.word(),
                     playlistUrl: faker.internet.url(),
                     user_id: user._id,
-                    artist_id: artistId
+                    artist_id: '12345'
                 });
-               
+                const newFavArtistSecond = new FavoriteArtist({
+                    favArtistName: faker.random.word(),
+                    playlistUrl: faker.internet.url(),
+                    user_id: user._id,
+                    artist_id: '12345'
+                });
                 const token = jwt.sign(
                     {
                         user: {
@@ -118,13 +116,13 @@ describe('/api/favartists', function () {
                         expiresIn: '7d'
                     }
                 );
+
                 return chai
                     .request(app)
-                    .post('/api/favartists')
-                    .set('authorization', `Bearer ${token}`)
-                    .send(newFavArtist)
+                    .post('/api/auth/login')
+                    .send({ username: 'wrongUsername', password })
                     .then((res) => {
-                        expect(res).to.have.status(400);
+                        expect(res).to.have.status(401);
                     });
             });
             it('Should post a new favorite artist',  async function () {

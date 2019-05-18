@@ -88,23 +88,21 @@ describe('/api/favartists', function () {
 
     describe('/api/favartists', function () {
         describe('POST', function () {
-            it('Should reject requests with where an artist is favorited already by user', async function () {
-                let artistId;
-                FavoriteArtist
-                    .findOne()
-                    .then(artist => {
-                        artistId = artist.artist_id;
-                    });
-
+            it('Should reject requests with where an event is favorited already by user', async function () {
                 let user = await getUser();
                 let userAuth = user.username;
-                const newFavArtist = new FavoriteArtist({
+                const newFavArtistFirst = new FavoriteArtist({
                     favArtistName: faker.random.word(),
                     playlistUrl: faker.internet.url(),
                     user_id: user._id,
-                    artist_id: artistId
+                    artist_id: '12345'
                 });
-               
+                const newFavArtistSecond = new FavoriteArtist({
+                    favArtistName: faker.random.word(),
+                    playlistUrl: faker.internet.url(),
+                    user_id: user._id,
+                    artist_id: '12345'
+                });
                 const token = jwt.sign(
                     {
                         user: {
@@ -122,10 +120,33 @@ describe('/api/favartists', function () {
                     .request(app)
                     .post('/api/favartists')
                     .set('authorization', `Bearer ${token}`)
-                    .send(newFavArtist)
+                    .send(newFavArtistFirst)
+                    .then((res) => {
+                        res.should.have.status(201);
+                        res.should.be.json;
+                        res.body.should.be.a('object');
+                        res.body.should.include.keys('favArtistName', 'playlistUrl', 'user_id', 'artist_id');
+                        res.body._id.should.not.be.null;
+                        res.body.favArtistName.should.equal(newFavArtist.favArtistName);
+                        res.body.playlistUrl.should.equal(newFavArtist.playlistUrl);
+                        res.body.user_id.should.equal(newFavArtist.user_id.toString());
+                        res.body.artist_id.should.equal(newFavArtist.artist_id);
+                    })
+                    .request(app)
+                    .post('/api/favartists')
+                    .set('authorization', `Bearer ${token}`)
+                    .send(newFavArtistSecond)
                     .then((res) => {
                         expect(res).to.have.status(400);
                     });
+
+                // return chai
+                //     .request(app)
+                //     .post('/api/auth/login')
+                //     .send({ username: 'wrongUsername', password })
+                //     .then((res) => {
+                //         expect(res).to.have.status(401);
+                //     });
             });
             it('Should post a new favorite artist',  async function () {
                 let user = await getUser();
