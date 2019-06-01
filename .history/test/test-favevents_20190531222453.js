@@ -130,7 +130,7 @@ describe('/api/favartists', function () {
                         res.body._id.should.not.be.null;
                         res.body.favEventName.should.equal(newFavEvent.favEventName);
                         res.body.favDate.should.equal(newFavEvent.favDate);
-                        res.body.favArtists.should.deep.equal(newFavEvent.favArtists);
+                        res.body.favSupportingArtists.should.deep.equal(newFavEvent.favArtists);
                         res.body.favVenue.should.equal(newFavEvent.favVenue);
                         res.body.favVenueLocation.should.equal(newFavEvent.favVenueLocation);
                         res.body.user_id.should.equal(newFavEvent.user_id.toString());

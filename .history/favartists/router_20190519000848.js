@@ -52,7 +52,7 @@ router.get('/:userId', jwtAuth, (req, res) => {
 // POST
 router.post('/', jwtAuth, (req, res) => {
     console.log(req.body);
-    const requiredFields = ['favArtistName', 'video_id', 'user_id', 'artist_id'];
+    const requiredFields = ['favArtistName', 'playlistUrl', 'user_id', 'artist_id'];
     requiredFields.forEach(field => {
         if (!(field in req.body)) {
             const message = `Missing \`${field}\` in request body`;
@@ -75,14 +75,14 @@ router.post('/', jwtAuth, (req, res) => {
                 FavoriteArtist
                     .create({
                         favArtistName: req.body.favArtistName,
-                        video_id: req.body.video_id,
+                        playlistUrl: req.body.playlistUrl,
                         user_id: req.body.user_id,
                         artist_id: req.body.artist_id
                     })
                     .then(favoriteArtist => res.status(201).json({
                         _id: favoriteArtist._id,
                         favArtistName: favoriteArtist.favArtistName,
-                        video_id: favoriteArtist.video_id,
+                        playlistUrl: favoriteArtist.playlistUrl,
                         user_id: favoriteArtist.user_id,
                         artist_id: favoriteArtist.artist_id
                     }))

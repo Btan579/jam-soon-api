@@ -12,8 +12,9 @@ const FavoriteEventSchema = mongoose.Schema({
         required: true,
     },
     favArtists: {
-        type: Array,
-        required: true
+        type: [{
+            type: String
+        }]
     },
     favVenue: {
         type: String,

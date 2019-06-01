@@ -97,7 +97,8 @@ describe('/api/favartists', function () {
                 const newFavEvent = new FavoriteEvent({
                     favEventName: faker.random.word(),
                     favDate: faker.date.future(),
-                    favArtists: [faker.random.word(), faker.random.word(), faker.random.word()],
+                    favHeadliner: faker.random.word(),
+                    favSupportingArtists: [faker.random.word(), faker.random.word(), faker.random.word()],
                     favVenue: faker.commerce.productName(),
                     favVenueLocation: `${faker.address.state()}, ${faker.address.city}`,
                     user_id: user._id,
@@ -126,11 +127,12 @@ describe('/api/favartists', function () {
                         res.should.have.status(201);
                         res.should.be.json;
                         res.body.should.be.a('object');
-                        res.body.should.include.keys('favEventName', 'favDate', 'favArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id');
+                        res.body.should.include.keys('favEventName', 'favDate', 'favHeadliner', 'favSupportingArtists', 'favVenue', 'favVenueLocation', 'user_id', 'event_id');
                         res.body._id.should.not.be.null;
                         res.body.favEventName.should.equal(newFavEvent.favEventName);
                         res.body.favDate.should.equal(newFavEvent.favDate);
-                        res.body.favArtists.should.deep.equal(newFavEvent.favArtists);
+                        res.body.favHeadliner.should.equal(newFavEvent.favHeadliner);
+                        res.body.favSupportingArtists.should.deep.equal(newFavEvent.favSupportingArtists);
                         res.body.favVenue.should.equal(newFavEvent.favVenue);
                         res.body.favVenueLocation.should.equal(newFavEvent.favVenueLocation);
                         res.body.user_id.should.equal(newFavEvent.user_id.toString());

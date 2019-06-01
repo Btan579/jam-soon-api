@@ -7,7 +7,7 @@ const favoriteArtistSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    video_id: {
+    videoUrl: {
         type: String,
         required: true
     },
@@ -26,7 +26,7 @@ favoriteArtistSchema.methods.serialize = function () {
     return {
         id: this._id,
         favArtistName: this.artistName,
-        video_id: this.video_id,
+        videoUrl: this.videoUrl,
         user_id: this.user_id,
         artist_id: this.artist_id
     };
