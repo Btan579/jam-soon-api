@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
 const cors = require('cors');
+
+
 const { router: usersRouter } = require('./users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const { router: favArtistsRouter } = require('./favartists');
@@ -20,11 +22,15 @@ const app = express();
 app.use(morgan('common'));
 
 // CORS
-app.use(
-    cors({
-        origin: CLIENT_ORIGIN
-    })
-);
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204);
+    }
+    next();
+});
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
@@ -47,10 +53,13 @@ app.get("/api/", (req, res) => {
     res.json({ ok: false });
 });
 
+
 app.use('*', (req, res) => {
     return res.status(404).json({ message: 'Not Found' });
 });
 
+// Referenced by both runServer and closeServer. closeServer
+// assumes runServer has run and set `server` to a server object
 let server;
 
 function runServer(databaseUrl, port = PORT) {
